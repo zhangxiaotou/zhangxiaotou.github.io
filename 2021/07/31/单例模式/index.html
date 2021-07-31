@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="单例模式">
+  <meta name="author" content="zhangxiaotou">
+  <meta name="keywords" content="">
+  
+  <title>单例模式 - zhangxiaotou</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"(˶˃◡˂˶)","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"56e61da3131e04403560f7f491b4a675","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>zhangxiaotou</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="单例模式">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-31 17:21" pubdate>
+        2021年7月31日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      797 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">单例模式</h1>
+            
+            <div class="markdown-body">
+              <h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。（注意Android在多进程下，单例失效，因为不是同一块内存）</p>
+<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><ul>
+<li>节约资源，对于需要频繁创建和销毁、占用内存资源比较大的对象能有效节约资源</li>
+<li>避免对资源的多重占用（比如写文件操作）</li>
+</ul>
+<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><ul>
+<li>单例类的职责过重，在一定程度上违背了“单一职责原则”</li>
+<li>由于单例模式中没有抽象层，因此单例类的扩展有很大的困难</li>
+</ul>
+<h4 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h4><p>EventBus、Retrofit、SQLiteOpenHelper、Glide……</p>
+<h4 id="五种使用方式"><a href="#五种使用方式" class="headerlink" title="五种使用方式"></a>五种使用方式</h4><p>1.饿汉式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//Java实现</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SingletonDemo instance=<span class="hljs-keyword">new</span> SingletonDemo();<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonDemo</span><span class="hljs-params">()</span></span>&#123;<br><br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonDemo <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-keyword">return</span> instance;<br>    &#125;<br>&#125;<br><span class="hljs-comment">//Kotlin实现</span><br>object SingletonDemo<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：<ul>
+<li>单例对象的创建是线程安全的；</li>
+<li>获取单例对象时不需要加锁。</li>
+</ul>
+</li>
+<li>缺点：单例对象的创建，不是延时加载。</li>
+</ul>
+<p>2.懒汉式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//Java实现</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SingletonDemo instance;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonDemo</span><span class="hljs-params">()</span></span>&#123;&#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonDemo <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-keyword">if</span>(instance==<span class="hljs-keyword">null</span>)&#123;<br>            instance=<span class="hljs-keyword">new</span> SingletonDemo();<br>        &#125;<br>        <span class="hljs-keyword">return</span> instance;<br>    &#125;<br>&#125;<br><span class="hljs-comment">//Kotlin实现</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> <span class="hljs-title">private</span> <span class="hljs-title">constructor</span>() </span>&#123;<br>    companion object &#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> instance: SingletonDemo? = <span class="hljs-function"><span class="hljs-keyword">null</span></span><br><span class="hljs-function">            <span class="hljs-title">get</span><span class="hljs-params">()</span> </span>&#123;<br>                <span class="hljs-keyword">if</span> (field == <span class="hljs-keyword">null</span>) &#123;<br>                    field = SingletonDemo()<br>                &#125;<br>                <span class="hljs-keyword">return</span> field<br>            &#125;<br>        <span class="hljs-function">fun <span class="hljs-title">get</span><span class="hljs-params">()</span>: SingletonDemo</span>&#123;<br>        <span class="hljs-comment">//细心的小伙伴肯定发现了，这里不用getInstance作为为方法名，是因为在伴生对象声明时，内部已有getInstance方法，所以只能取其他名字</span><br>         <span class="hljs-keyword">return</span> instance!!<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>3.懒汉线程安全</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//Java实现</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SingletonDemo instance;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonDemo</span><span class="hljs-params">()</span></span>&#123;&#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> SingletonDemo <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;<span class="hljs-comment">//使用同步锁</span><br>        <span class="hljs-keyword">if</span>(instance==<span class="hljs-keyword">null</span>)&#123;<br>            instance=<span class="hljs-keyword">new</span> SingletonDemo();<br>        &#125;<br>        <span class="hljs-keyword">return</span> instance;<br>    &#125;<br>&#125;<br><span class="hljs-comment">//Kotlin实现</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> <span class="hljs-title">private</span> <span class="hljs-title">constructor</span>() </span>&#123;<br>    companion object &#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> instance: SingletonDemo? = <span class="hljs-function"><span class="hljs-keyword">null</span></span><br><span class="hljs-function">            <span class="hljs-title">get</span><span class="hljs-params">()</span> </span>&#123;<br>                <span class="hljs-keyword">if</span> (field == <span class="hljs-keyword">null</span>) &#123;<br>                    field = SingletonDemo()<br>                &#125;<br>                <span class="hljs-keyword">return</span> field<br>            &#125;<br>        <span class="hljs-meta">@Synchronized</span><br>        <span class="hljs-function">fun <span class="hljs-title">get</span><span class="hljs-params">()</span>: SingletonDemo</span>&#123;<br>            <span class="hljs-keyword">return</span> instance!!<br>        &#125;<br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：<ul>
+<li>对象的创建是线程安全的。</li>
+<li>支持延时加载。</li>
+</ul>
+</li>
+<li>缺点：获取对象的操作被加上了锁，影响了并发度。<ul>
+<li>如果单例对象需要频繁使用，那这个缺点就是无法接受的。</li>
+<li>如果单例对象不需要频繁使用，那这个缺点也无伤大雅。</li>
+</ul>
+</li>
+</ul>
+<p>4.双重校验锁</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//Java实现</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">static</span> SingletonDemo instance;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonDemo</span><span class="hljs-params">()</span></span>&#123;&#125; <br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonDemo <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-keyword">if</span>(instance==<span class="hljs-keyword">null</span>)&#123;<br>            <span class="hljs-keyword">synchronized</span> (SingletonDemo.class)&#123;<br>                <span class="hljs-keyword">if</span>(instance==<span class="hljs-keyword">null</span>)&#123;<br>                    instance=<span class="hljs-keyword">new</span> SingletonDemo();<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> instance;<br>    &#125;<br>&#125;<br><span class="hljs-comment">//kotlin实现</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> <span class="hljs-title">private</span> <span class="hljs-title">constructor</span>() </span>&#123;<br>    companion object &#123;<br>        val instance: <span class="hljs-function">SingletonDemo by <span class="hljs-title">lazy</span><span class="hljs-params">(mode = LazyThreadSafetyMode.SYNCHRONIZED)</span> </span>&#123;<br>        SingletonDemo() &#125;<br>    &#125;<br>&#125;<br><span class="hljs-comment">//或者 来自项目代码中的实现方式</span><br>     companion object &#123;<br><br>                <span class="hljs-keyword">private</span> <span class="hljs-keyword">const</span> val INTERVAL = <span class="hljs-number">1000</span> * <span class="hljs-number">60</span> * <span class="hljs-number">60</span> * <span class="hljs-number">24</span> * <span class="hljs-number">20.</span>toLong()<br><br>                <span class="hljs-meta">@Volatile</span><br>                <span class="hljs-keyword">var</span> mInstance: AppPrefHelper? = <span class="hljs-function"><span class="hljs-keyword">null</span></span><br><span class="hljs-function"></span><br><span class="hljs-function">                fun <span class="hljs-title">getInstance</span><span class="hljs-params">(context: Context)</span>: AppPrefHelper </span>&#123;<br>                    <span class="hljs-keyword">if</span> (mInstance == <span class="hljs-keyword">null</span>) &#123;<br>                        <span class="hljs-keyword">synchronized</span>(AppPrefHelper::<span class="hljs-class"><span class="hljs-keyword">class</span>) </span>&#123;<br>                            <span class="hljs-keyword">if</span> (mInstance == <span class="hljs-keyword">null</span>) &#123;<br>                                mInstance = AppPrefHelper(context)<br>                            &#125;<br>                        &#125;<br>                    &#125;<br>                    <span class="hljs-keyword">return</span> mInstance!!<br>                &#125;<br>    &#125;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>对象的创建是线程安全的。</li>
+<li>支持延时加载。</li>
+<li>获取对象时不需要加锁。</li>
+</ul>
+<p>5.静态内部类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//Java实现</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonHolder</span></span>&#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SingletonDemo instance=<span class="hljs-keyword">new</span> SingletonDemo();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonDemo</span><span class="hljs-params">()</span></span>&#123;<br>        System.out.println(<span class="hljs-string">&quot;Singleton has loaded&quot;</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonDemo <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-keyword">return</span> SingletonHolder.instance;<br>    &#125;<br>&#125;<br><span class="hljs-comment">//kotlin实现</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonDemo</span> <span class="hljs-title">private</span> <span class="hljs-title">constructor</span>() </span>&#123;<br>    companion object &#123;<br>        val instance = SingletonHolder.holder<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> object SingletonHolder &#123;<br>        val holder= SingletonDemo()<br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>优点同Double check</p>
+<p>6.枚举</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//java</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">Singleton</span> </span>&#123;<br>  INSTANCE; <span class="hljs-comment">// 该对象全局唯一</span><br>&#125;<br><br><span class="hljs-comment">//kotlin</span><br><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">class</span> <span class="hljs-title">Direction</span> </span>&#123;<br>    NORTH, SOUTH, WEST, EAST<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E9%80%A0%E5%9E%8B%E6%A8%A1%E5%BC%8F/">创造型模式</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/31/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">代理模式</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/31/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">
+                        <span class="hidden-mobile">工厂模式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="" target="_blank" rel="nofollow noopener"><span>zhangxiaotou </span></a> <i class="iconfont icon-love"></i> <a href="" target="_blank" rel="nofollow noopener"><span> All rights reserved.</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?56e61da3131e04403560f7f491b4a675";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+  
+<script src="/js/sukura.js"></script>
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
